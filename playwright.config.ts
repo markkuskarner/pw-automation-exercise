@@ -17,6 +17,9 @@ export default defineConfig({
     testIdAttribute: 'data-qa',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    launchOptions: {
+    slowMo: 500,
+  },
   },
   projects: [
     {

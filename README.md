@@ -92,6 +92,7 @@ npx playwright test TC12
   - tests run with a single worker and an increased timeout;
   - CI runs **manually** (`Actions → Playwright Tests → Run workflow`) rather than on every push, to avoid failures caused by the site rather than the tests.
 - Ads are blocked at the network level by a fixture; they are third-party content and not part of the tested functionality.
+- Tests run with slowMo because the demo site attaches its JavaScript handlers late; this trades a few minutes of run time for stable results.
 
 ## Planned improvements
 

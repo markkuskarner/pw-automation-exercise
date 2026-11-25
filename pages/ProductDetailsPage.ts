@@ -7,6 +7,10 @@ export class ProductDetailsPage {
   readonly viewCartButton: Locator;
   readonly productName: Locator;
   readonly productInformation: Locator;
+  readonly yourNameTextField: Locator
+  readonly yourEmailTextField: Locator
+  readonly yourReviewTextField: Locator
+  readonly submitReviewButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -15,6 +19,10 @@ export class ProductDetailsPage {
     this.viewCartButton = page.getByRole('link', { name: 'View Cart' });
     this.productInformation = page.locator('.product-information');
     this.productName = this.productInformation.locator('h2');
+    this.yourNameTextField = page.getByPlaceholder("Your Name");
+    this.yourEmailTextField = page.getByRole('textbox', { name: 'Email Address', exact: true })
+    this.yourReviewTextField = page.getByPlaceholder("Add Review Here!");
+    this.submitReviewButton = page.locator('#button-review');
   }
 
   async assertProductDetailedPageIsVisible() {

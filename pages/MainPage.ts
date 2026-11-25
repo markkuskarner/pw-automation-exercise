@@ -17,6 +17,7 @@ export class MainPage {
   readonly viewProductButton: Locator;
   readonly addToCartButton: Locator;
   readonly viewCartButton: Locator;
+  readonly continueShoppingButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -35,6 +36,7 @@ export class MainPage {
     this.viewProductButton = page.getByRole('link', { name: 'View Product' });
     this.addToCartButton = page.getByText('Add to cart');
     this.viewCartButton = page.getByRole('link', { name: 'View Cart' });
+    this.continueShoppingButton = page.getByRole('button', { name: 'Continue Shopping' });
   }
 
   async open() {
@@ -56,6 +58,7 @@ export class MainPage {
 
   async clickFirstAddToCartButton(){
     await this.addToCartButton.first().click();
+    await expect(this.page.getByText('Your product has been added to cart.')).toBeVisible();
   }
 
   async clickViewCartButton() {

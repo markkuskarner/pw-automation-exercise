@@ -10,6 +10,7 @@ export class CartPage {
   readonly breadcrumbs: Locator;
   readonly proceedToCheckoutButton: Locator;
   readonly regLogButton: Locator;
+  readonly loginButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -21,6 +22,7 @@ export class CartPage {
     this.breadcrumbs = page.locator('.breadcrumbs');
     this.proceedToCheckoutButton = page.getByText('Proceed To Checkout');
     this.regLogButton = page.getByRole('link', {name: 'Register / Login'});
+    this.loginButton = page.getByRole('link', {name: 'Signup / Login'})
   }
 
   async open() {
@@ -32,7 +34,8 @@ export class CartPage {
   }
 
   async assertCartPageIsOpen() {
-    await expect(this.page).toHaveURL(/view_cart/);
-    await expect(this.breadcrumbs).toContainText('Shopping Cart');
+  await expect(this.page).toHaveURL(/view_cart/);
+  await this.page.waitForLoadState('load');
+  await expect(this.breadcrumbs).toContainText('Shopping Cart');
   }
 }
