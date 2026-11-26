@@ -63,28 +63,40 @@ npm run report         # open the last HTML report
 Run a single test case:
 
 ```bash
-npx playwright test TC12
+npx playwright test --grep @TC12   # every test is tagged with its test case number
 ```
 
 ## Test coverage
 
-| # | Test case | Type |
-|---|-----------|------|
-| TC1 | Register user | UI |
-| TC2 | Login with correct email and password | UI + API setup |
-| TC3 | Login with incorrect email and password | UI |
-| TC4 | Logout user | UI + API setup |
-| TC5 | Register with an existing email | UI + API setup |
-| TC6 | Contact Us form (file upload, dialog) | UI |
-| TC7 | Test Cases page | UI |
-| TC8 | All products and product detail page | UI |
-| TC9 | Search product | UI |
-| TC10 | Subscription on home page | UI |
-| TC11 | Subscription on cart page | UI |
-| TC12 | Add products to cart (prices, quantity, totals) | UI |
-| TC13 | Product quantity in cart | UI |
-| TC14 | Place order: register while checkout | UI |
-| — | Create and delete user | API |
+| # | Test case | Type | Spec file |
+|---|-----------|------|-----------|
+| TC1 | Register user | UI | `Register/register.spec.ts` |
+| TC2 | Login with correct email and password | UI + API setup | `Login/login.spec.ts` |
+| TC3 | Login with incorrect email and password | UI | `Login/login.spec.ts` |
+| TC4 | Logout user | UI + API setup | `Login/login.spec.ts` |
+| TC5 | Register with an existing email | UI + API setup | `Register/register.spec.ts` |
+| TC6 | Contact Us form (file upload, dialog) | UI | `ContactUs/contact-us.spec.ts` |
+| TC7 | Test Cases page | UI | `Navigation/navigation.spec.ts` |
+| TC8 | All products and product detail page | UI | `Navigation/navigation.spec.ts` |
+| TC9 | Search product | UI | `Navigation/navigation.spec.ts` |
+| TC10 | Subscription on home page | UI | `Navigation/navigation.spec.ts` |
+| TC11 | Subscription on cart page | UI | `Cart/cart.spec.ts` |
+| TC12 | Add products to cart (prices, quantity, totals) | UI | `Cart/cart.spec.ts` |
+| TC13 | Product quantity in cart | UI | `Cart/cart.spec.ts` |
+| TC14 | Place order: register while checkout | UI | `Cart/cart.spec.ts` |
+| TC15 | Place order: register before checkout | UI | `Cart/cart.spec.ts` |
+| TC16 | Place order: login before checkout | UI + API setup | `Cart/cart.spec.ts` |
+| TC17 | Remove products from cart | UI | `Cart/cart.spec.ts` |
+| TC18 | View category products | UI | `Navigation/navigation.spec.ts` |
+| TC19 | View and cart brand products | UI | `Navigation/navigation.spec.ts` |
+| TC20 | Search products and verify cart after login | UI + API setup | `Cart/cart.spec.ts` |
+| TC21 | Add review on product | UI | `Navigation/navigation.spec.ts` |
+| TC22 | Add to cart from recommended items | UI | `Cart/cart.spec.ts` |
+| TC23 | Verify address details in checkout page | UI | `Navigation/navigation.spec.ts` |
+| TC24 | Download invoice after purchase order (file download) | UI | `Cart/cart.spec.ts` |
+| TC25 | Scroll up using the arrow button and scroll down | UI | `Navigation/navigation.spec.ts` |
+| TC26 | Scroll up without the arrow button and scroll down | UI | `Navigation/navigation.spec.ts` |
+| — | Create and delete user | API | `API/api.spec.ts` |
 
 ## Notes and known limitations
 
@@ -96,7 +108,7 @@ npx playwright test TC12
 
 ## Planned improvements
 
-- Remaining test cases from the site's list (TC15–TC26)
+- Shared helper for the repeated checkout flow (TC14, TC15, TC16, TC24)
 - Shared components for repeated page parts (header, footer, product cards)
 - Login via saved session state (`storageState`) for tests that don't verify login itself
 - Tags (`@smoke`, `@regression`) for selective runs
