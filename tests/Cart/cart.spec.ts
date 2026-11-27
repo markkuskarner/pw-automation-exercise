@@ -3,49 +3,14 @@ import * as fs from 'fs';
 import { createCardData } from '@data/cardFactory';
 import { createUserData } from '@data/userFactory';
 import { test, expect } from '@fixtures/fixtures';
-import { AccCreatedPage } from '@pages/AccCreatedPage';
-import { AccDeletedPage } from '@pages/AccDeletedPage';
-import { CartPage } from '@pages/CartPage';
-import { CheckoutPage } from '@pages/CheckoutPage';
-import { LoginPage } from '@pages/LoginPage';
-import { MainPage } from '@pages/MainPage';
-import { PaymentDonePage } from '@pages/PaymentDonePage';
-import { PaymentPage } from '@pages/PaymentPage';
-import { ProductDetailsPage } from '@pages/ProductDetailsPage';
-import { ProductsPage } from '@pages/ProductsPage';
-import { SignUpPage } from '@pages/SignupPage';
 
 test.describe('Cart', { tag: '@regression' }, () => {
-    let mainPage: MainPage;
-    let cartPage: CartPage;
-    let productsPage: ProductsPage;
-    let productDetPage: ProductDetailsPage;
-    let loginPage: LoginPage;
-    let signupPage: SignUpPage;
-    let accCreatedPage: AccCreatedPage;
-    let accDeletedPage: AccDeletedPage;
-    let checkoutPage: CheckoutPage;
-    let paymentPage: PaymentPage;
-    let paymentDonePage: PaymentDonePage;
-
-    test.beforeEach(async ({ page }) => {
-        mainPage = new MainPage(page);
-        cartPage = new CartPage(page);
-        productsPage = new ProductsPage(page);
-        productDetPage = new ProductDetailsPage(page);
-        loginPage = new LoginPage(page);
-        signupPage = new SignUpPage(page);
-        accCreatedPage = new AccCreatedPage(page);
-        accDeletedPage = new AccDeletedPage(page);
-        checkoutPage = new CheckoutPage(page);
-        paymentPage = new PaymentPage(page);
-        paymentDonePage = new PaymentDonePage(page);
-
+    test.beforeEach(async ({ mainPage }) => {
         await mainPage.open();
         await mainPage.assertHomePageisVisible();
     });
 
-    test('user can subscribe from cart page', { tag: '@TC11' }, async ({ page }) => {
+    test('user can subscribe from cart page', { tag: '@TC11' }, async ({ page, mainPage, cartPage }) => {
         await mainPage.cartButton.click();
         await expect(cartPage.subscriptionText).toBeVisible();
         await cartPage.subEmailField.fill(faker.internet.email());
@@ -53,7 +18,7 @@ test.describe('Cart', { tag: '@regression' }, () => {
         await expect(page.getByText('You have been successfully')).toBeVisible();
     });
 
-    test('user can add products to cart', { tag: ['@TC12', '@smoke'] }, async () => {
+    test('user can add products to cart', { tag: ['@TC12', '@smoke'] }, async ({ mainPage, productsPage, cartPage }) => {
         await mainPage.productsButton.click();
 
         const firstProductName = await productsPage.firstProductName.textContent();
@@ -81,22 +46,22 @@ test.describe('Cart', { tag: '@regression' }, () => {
         await expect(secondRow.locator('.cart_total')).toHaveText(secondProductPrice!);
     });
 
-    test('cart keeps the quantity chosen on product details page', { tag: '@TC13' }, async () => {
+    test('cart keeps the quantity chosen on product details page', { tag: '@TC13' }, async ({ mainPage, productDetailsPage, cartPage }) => {
         const quantity = '4';
 
         await mainPage.clickFirstViewProductButton();
-        await productDetPage.assertProductDetailedPageIsVisible();
-        const productName = await productDetPage.productName.textContent();
-        await productDetPage.quantityField.fill(quantity);
-        await productDetPage.clickAddToCartButton();
-        await productDetPage.clickViewCartButton();
+        await productDetailsPage.assertProductDetailedPageIsVisible();
+        const productName = await productDetailsPage.productName.textContent();
+        await productDetailsPage.quantityField.fill(quantity);
+        await productDetailsPage.clickAddToCartButton();
+        await productDetailsPage.clickViewCartButton();
         const productRow = cartPage.productRow(productName!);
 
         await expect(productRow).toBeVisible();
         await expect(productRow.locator('.cart_quantity')).toHaveText(quantity);
     });
 
-    test('user can place order when registering during checkout', { tag: '@TC14' }, async ({ page }) => {
+    test('user can place order when registering during checkout', { tag: '@TC14' }, async ({ mainPage, cartPage, loginPage, signUpPage, accCreatedPage, checkoutPage, paymentPage, paymentDonePage, accDeletedPage }) => {
         const user = createUserData();
         const card = createCardData();
 
@@ -109,8 +74,8 @@ test.describe('Cart', { tag: '@regression' }, () => {
 
         await loginPage.startSignUp(user.name, user.email);
 
-        await signupPage.fillAccountInformation(user);
-        await signupPage.createAccountButton.click();
+        await signUpPage.fillAccountInformation(user);
+        await signUpPage.createAccountButton.click();
 
         await accCreatedPage.assertAccCreatedPageIsVisible();
         await accCreatedPage.contButton.click();
@@ -139,7 +104,7 @@ test.describe('Cart', { tag: '@regression' }, () => {
         await accDeletedPage.contButton.click();
     });
 
-    test('user can place order when registering before checkout', { tag: '@TC15' }, async () => {
+    test('user can place order when registering before checkout', { tag: '@TC15' }, async ({ mainPage, loginPage, signUpPage, accCreatedPage, cartPage, checkoutPage, paymentPage, paymentDonePage, accDeletedPage }) => {
         const user = createUserData();
         const card = createCardData();
 
@@ -147,8 +112,8 @@ test.describe('Cart', { tag: '@regression' }, () => {
 
         await loginPage.startSignUp(user.name, user.email);
 
-        await signupPage.fillAccountInformation(user);
-        await signupPage.createAccountButton.click();
+        await signUpPage.fillAccountInformation(user);
+        await signUpPage.createAccountButton.click();
 
         await accCreatedPage.assertAccCreatedPageIsVisible();
         await accCreatedPage.contButton.click();
@@ -180,7 +145,7 @@ test.describe('Cart', { tag: '@regression' }, () => {
         await accDeletedPage.contButton.click();
     });
 
-    test('user can place order when logging in before checkout', { tag: ['@TC16', '@smoke'] }, async ({ createdUser }) => {
+    test('user can place order when logging in before checkout', { tag: ['@TC16', '@smoke'] }, async ({ mainPage, loginPage, cartPage, checkoutPage, paymentPage, paymentDonePage, accDeletedPage, createdUser }) => {
         const card = createCardData();
 
         await mainPage.loginButton.click();
@@ -216,7 +181,7 @@ test.describe('Cart', { tag: '@regression' }, () => {
         await accDeletedPage.contButton.click();
     });
 
-    test('user can remove product from cart', { tag: '@TC17' }, async () => {
+    test('user can remove product from cart', { tag: '@TC17' }, async ({ mainPage, productsPage, cartPage }) => {
         await mainPage.productsButton.click();
 
         const firstProductName = await productsPage.firstProductName.textContent();
@@ -231,7 +196,7 @@ test.describe('Cart', { tag: '@regression' }, () => {
         await expect(cartPage.productRow(firstProductName!)).toHaveCount(0);
     });
 
-    test('cart keeps searched products after login', { tag: '@TC20' }, async ({ page, createdUser }) => {
+    test('cart keeps searched products after login', { tag: '@TC20' }, async ({ page, mainPage, productsPage, cartPage, loginPage, createdUser }) => {
         const searchProduct = 'jeans';
 
         await mainPage.productsButton.click();
@@ -276,7 +241,7 @@ test.describe('Cart', { tag: '@regression' }, () => {
         }
     });
 
-    test('user can add recommended item to cart', { tag: '@TC22' }, async ({ page }) => {
+    test('user can add recommended item to cart', { tag: '@TC22' }, async ({ page, mainPage, cartPage }) => {
         const recomItems = page.locator('#recommended-item-carousel');
         const visibleItems = recomItems.locator('.item.active');
 
@@ -290,7 +255,7 @@ test.describe('Cart', { tag: '@regression' }, () => {
         await expect(cartPage.productRow(productName!)).toBeVisible();
     });
 
-    test('user can download invoice after placing order', { tag: '@TC24' }, async ({ page }) => {
+    test('user can download invoice after placing order', { tag: '@TC24' }, async ({ page, mainPage, loginPage, signUpPage, accCreatedPage, cartPage, checkoutPage, paymentPage, paymentDonePage, accDeletedPage }) => {
         const user = createUserData();
         const card = createCardData();
 
@@ -298,8 +263,8 @@ test.describe('Cart', { tag: '@regression' }, () => {
 
         await loginPage.startSignUp(user.name, user.email);
 
-        await signupPage.fillAccountInformation(user);
-        await signupPage.createAccountButton.click();
+        await signUpPage.fillAccountInformation(user);
+        await signUpPage.createAccountButton.click();
 
         await accCreatedPage.assertAccCreatedPageIsVisible();
         await accCreatedPage.contButton.click();

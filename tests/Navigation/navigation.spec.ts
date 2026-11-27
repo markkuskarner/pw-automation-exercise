@@ -1,49 +1,20 @@
 import { faker } from '@faker-js/faker';
 import { createUserData } from '@data/userFactory';
 import { test, expect } from '@fixtures/fixtures';
-import { AccCreatedPage } from '@pages/AccCreatedPage';
-import { AccDeletedPage } from '@pages/AccDeletedPage';
-import { CartPage } from '@pages/CartPage';
-import { CheckoutPage } from '@pages/CheckoutPage';
-import { LoginPage } from '@pages/LoginPage';
-import { MainPage } from '@pages/MainPage';
-import { ProductDetailsPage } from '@pages/ProductDetailsPage';
-import { ProductsPage } from '@pages/ProductsPage';
-import { SignUpPage } from '@pages/SignupPage';
 
 test.describe('Navigation', { tag: '@regression' }, () => {
-    let mainPage: MainPage;
-    let productsPage: ProductsPage;
-    let productDetailsPage: ProductDetailsPage;
-    let loginPage: LoginPage;
-    let signupPage: SignUpPage;
-    let accCreatedPage: AccCreatedPage;
-    let accDeletedPage: AccDeletedPage;
-    let cartPage: CartPage;
-    let checkoutPage: CheckoutPage;
-
-    test.beforeEach(async ({ page }) => {
-        mainPage = new MainPage(page);
-        productsPage = new ProductsPage(page);
-        productDetailsPage = new ProductDetailsPage(page);
-        loginPage = new LoginPage(page);
-        signupPage = new SignUpPage(page);
-        accCreatedPage = new AccCreatedPage(page);
-        accDeletedPage = new AccDeletedPage(page);
-        cartPage = new CartPage(page);
-        checkoutPage = new CheckoutPage(page);
-
+    test.beforeEach(async ({ mainPage }) => {
         await mainPage.open();
         await mainPage.assertHomePageisVisible();
     });
 
-    test('user can open Test Cases page', { tag: '@TC7' }, async ({ page }) => {
+    test('user can open Test Cases page', { tag: '@TC7' }, async ({ page, mainPage }) => {
         await mainPage.testcasesButton.click();
         await expect(page.getByText('Below is the list of test Cases for you to practice the Automation. Click on the scenario for detailed Test Steps:'))
             .toBeVisible();
     });
 
-    test('user can view all products and product details', { tag: ['@TC8', '@smoke'] }, async ({ page }) => {
+    test('user can view all products and product details', { tag: ['@TC8', '@smoke'] }, async ({ page, mainPage, productsPage, productDetailsPage }) => {
         await mainPage.productsButton.click();
 
         await productsPage.assertProductsPageIsOpen();
@@ -65,7 +36,7 @@ test.describe('Navigation', { tag: '@regression' }, () => {
         await expect(details).toContainText(/Brand:\s*\S+/);
     });
 
-    test('search returns only matching products', { tag: ['@TC9', '@smoke'] }, async ({ page }) => {
+    test('search returns only matching products', { tag: ['@TC9', '@smoke'] }, async ({ page, mainPage, productsPage }) => {
         const searchProduct = 'jeans';
 
         await mainPage.productsButton.click();
@@ -83,7 +54,7 @@ test.describe('Navigation', { tag: '@regression' }, () => {
         }
     });
 
-    test('user can subscribe from home page', { tag: '@TC10' }, async ({ page }) => {
+    test('user can subscribe from home page', { tag: '@TC10' }, async ({ page, mainPage }) => {
         await expect(mainPage.subscriptionText).toBeVisible();
         await mainPage.subEmailField.fill(faker.internet.email());
         await mainPage.subEmailButton.click();
@@ -106,7 +77,7 @@ test.describe('Navigation', { tag: '@regression' }, () => {
         await expect(page.getByText('Men - Jeans Products')).toBeVisible();
     });
 
-    test('user can view products by brand', { tag: '@TC19' }, async ({ page }) => {
+    test('user can view products by brand', { tag: '@TC19' }, async ({ page, mainPage }) => {
         const brands = page.locator('.brands_products');
 
         await mainPage.productsButton.click();
@@ -117,7 +88,7 @@ test.describe('Navigation', { tag: '@regression' }, () => {
         await expect(page.getByText('Brand - Biba Products')).toBeVisible();
     });
 
-    test('user can add a review on product', { tag: '@TC21' }, async ({ page }) => {
+    test('user can add a review on product', { tag: '@TC21' }, async ({ page, mainPage, productsPage, productDetailsPage }) => {
         await mainPage.productsButton.click();
         await productsPage.assertProductsPageIsOpen();
         await productsPage.firstViewProductButton.click();
@@ -128,15 +99,15 @@ test.describe('Navigation', { tag: '@regression' }, () => {
         await expect(page.getByText('Thank you for your review.')).toBeVisible();
     });
 
-    test('checkout shows the address entered at registration', { tag: '@TC23' }, async () => {
+    test('checkout shows the address entered at registration', { tag: '@TC23' }, async ({ mainPage, loginPage, signUpPage, accCreatedPage, cartPage, checkoutPage, accDeletedPage }) => {
         const user = createUserData();
 
         await mainPage.loginButton.click();
 
         await loginPage.startSignUp(user.name, user.email);
 
-        await signupPage.fillAccountInformation(user);
-        await signupPage.createAccountButton.click();
+        await signUpPage.fillAccountInformation(user);
+        await signUpPage.createAccountButton.click();
 
         await accCreatedPage.assertAccCreatedPageIsVisible();
         await accCreatedPage.contButton.click();
@@ -157,7 +128,7 @@ test.describe('Navigation', { tag: '@regression' }, () => {
         await accDeletedPage.contButton.click();
     });
 
-    test('user can scroll up using the arrow button', { tag: '@TC25' }, async ({ page }) => {
+    test('user can scroll up using the arrow button', { tag: '@TC25' }, async ({ page, mainPage }) => {
         await expect(mainPage.scrollUpArrow).toBeHidden();
 
         await page.mouse.wheel(0, 3000);
@@ -177,7 +148,7 @@ test.describe('Navigation', { tag: '@regression' }, () => {
         await expect(page).toHaveURL(/automationexercise\.com\/(#top)?$/);
     });
 
-    test('user can scroll up without the arrow button', { tag: '@TC26' }, async ({ page }) => {
+    test('user can scroll up without the arrow button', { tag: '@TC26' }, async ({ page, mainPage }) => {
         await mainPage.scrollToBottom();
         await expect(mainPage.subscriptionHeading).toBeInViewport();
         await expect(mainPage.heroHeading).not.toBeInViewport();
