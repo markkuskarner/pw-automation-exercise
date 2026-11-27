@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { test, expect } from '@fixtures/fixtures';
 import { MainPage } from '@pages/MainPage';
 
-test.describe('Contact Us', () => {
+test.describe('Contact Us', { tag: '@regression' }, () => {
     let mainPage: MainPage;
 
     test.beforeEach(async ({ page }) => {

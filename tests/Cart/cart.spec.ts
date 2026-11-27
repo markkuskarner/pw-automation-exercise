@@ -15,7 +15,7 @@ import { ProductDetailsPage } from '@pages/ProductDetailsPage';
 import { ProductsPage } from '@pages/ProductsPage';
 import { SignUpPage } from '@pages/SignupPage';
 
-test.describe('Cart', () => {
+test.describe('Cart', { tag: '@regression' }, () => {
     let mainPage: MainPage;
     let cartPage: CartPage;
     let productsPage: ProductsPage;
@@ -53,7 +53,7 @@ test.describe('Cart', () => {
         await expect(page.getByText('You have been successfully')).toBeVisible();
     });
 
-    test('user can add products to cart', { tag: '@TC12' }, async () => {
+    test('user can add products to cart', { tag: ['@TC12', '@smoke'] }, async () => {
         await mainPage.productsButton.click();
 
         const firstProductName = await productsPage.firstProductName.textContent();
@@ -180,7 +180,7 @@ test.describe('Cart', () => {
         await accDeletedPage.contButton.click();
     });
 
-    test('user can place order when logging in before checkout', { tag: '@TC16' }, async ({ createdUser }) => {
+    test('user can place order when logging in before checkout', { tag: ['@TC16', '@smoke'] }, async ({ createdUser }) => {
         const card = createCardData();
 
         await mainPage.loginButton.click();

@@ -4,7 +4,7 @@ import { AccDeletedPage } from '@pages/AccDeletedPage';
 import { LoginPage } from '@pages/LoginPage';
 import { MainPage } from '@pages/MainPage';
 
-test.describe('Login', () => {
+test.describe('Login', { tag: '@regression' }, () => {
     let mainPage: MainPage;
     let loginPage: LoginPage;
     let accDeletedPage: AccDeletedPage;
@@ -23,7 +23,7 @@ test.describe('Login', () => {
         await expect(loginPage.loginToYourAccText).toBeVisible();
     });
 
-    test('user can log in with correct credentials', { tag: '@TC2' }, async ({ createdUser }) => {
+    test('user can log in with correct credentials', { tag: ['@TC2', '@smoke'] }, async ({ createdUser }) => {
         await loginPage.loginIntoAccount(createdUser.email, createdUser.password);
 
         await expect(mainPage.logginedUserText).toContainText(createdUser.name);

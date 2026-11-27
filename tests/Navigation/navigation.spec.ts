@@ -11,7 +11,7 @@ import { ProductDetailsPage } from '@pages/ProductDetailsPage';
 import { ProductsPage } from '@pages/ProductsPage';
 import { SignUpPage } from '@pages/SignupPage';
 
-test.describe('Navigation', () => {
+test.describe('Navigation', { tag: '@regression' }, () => {
     let mainPage: MainPage;
     let productsPage: ProductsPage;
     let productDetailsPage: ProductDetailsPage;
@@ -43,7 +43,7 @@ test.describe('Navigation', () => {
             .toBeVisible();
     });
 
-    test('user can view all products and product details', { tag: '@TC8' }, async ({ page }) => {
+    test('user can view all products and product details', { tag: ['@TC8', '@smoke'] }, async ({ page }) => {
         await mainPage.productsButton.click();
 
         await productsPage.assertProductsPageIsOpen();
@@ -65,7 +65,7 @@ test.describe('Navigation', () => {
         await expect(details).toContainText(/Brand:\s*\S+/);
     });
 
-    test('search returns only matching products', { tag: '@TC9' }, async ({ page }) => {
+    test('search returns only matching products', { tag: ['@TC9', '@smoke'] }, async ({ page }) => {
         const searchProduct = 'jeans';
 
         await mainPage.productsButton.click();

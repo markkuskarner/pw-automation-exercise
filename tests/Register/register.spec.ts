@@ -6,7 +6,7 @@ import { MainPage } from '@pages/MainPage';
 import { SignUpPage } from '@pages/SignupPage';
 import { AccDeletedPage } from '@pages/AccDeletedPage';
 
-test.describe('Register', () => {
+test.describe('Register', { tag: '@regression' }, () => {
     let mainPage: MainPage;
     let loginPage: LoginPage;
     let signUpPage: SignUpPage;
@@ -27,7 +27,7 @@ test.describe('Register', () => {
         await expect(loginPage.newUserSignupText).toBeVisible();
     });
 
-    test('user can register a new account', { tag: '@TC1' }, async ({ page }) => {
+    test('user can register a new account', { tag: ['@TC1', '@smoke'] }, async ({ page }) => {
         const user = createUserData();
 
         await loginPage.startSignUp(user.name, user.email);

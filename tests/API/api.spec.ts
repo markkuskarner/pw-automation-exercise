@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from '@fixtures/fixtures';
 
-test.describe('API', () => {
+test.describe('API', { tag: '@regression' }, () => {
     test('user can be created and deleted via API', async ({ request }) => {
         const email = faker.internet.email();
         const password = faker.internet.password();
