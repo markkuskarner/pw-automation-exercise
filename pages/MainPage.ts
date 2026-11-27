@@ -17,6 +17,10 @@ export class MainPage {
   readonly viewProductButton: Locator;
   readonly addToCartButton: Locator;
   readonly viewCartButton: Locator;
+  readonly continueShoppingButton: Locator;
+  readonly scrollUpArrow: Locator;
+  readonly heroHeading: Locator;
+  readonly subscriptionHeading: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -35,6 +39,12 @@ export class MainPage {
     this.viewProductButton = page.getByRole('link', { name: 'View Product' });
     this.addToCartButton = page.getByText('Add to cart');
     this.viewCartButton = page.getByRole('link', { name: 'View Cart' });
+    this.continueShoppingButton = page.getByRole('button', { name: 'Continue Shopping' });
+    this.scrollUpArrow = page.locator('#scrollUp');
+    this.heroHeading = page
+      .getByRole('heading', { name: 'Full-Fledged practice website for Automation Engineers' })
+      .filter({ visible: true });
+    this.subscriptionHeading = page.getByRole('heading', { name: 'Subscription' });
   }
 
   async open() {
@@ -56,6 +66,24 @@ export class MainPage {
 
   async clickFirstAddToCartButton(){
     await this.addToCartButton.first().click();
+    await expect(this.page.getByText('Your product has been added to cart.')).toBeVisible();
+  }
+
+  async scrollY() {
+    return this.page.evaluate(() => window.scrollY);
+  }
+
+  async scrollToBottom() {
+    // lazy-loaded content can push the footer down after the first scroll, so re-scroll until it stays in view
+    await expect(async () => {
+      await this.subscriptionHeading.scrollIntoViewIfNeeded();
+      await expect(this.subscriptionHeading).toBeInViewport({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+  }
+
+  async assertScrolledToTop() {
+    await expect.poll(() => this.scrollY()).toBe(0);
+    await expect(this.heroHeading).toBeInViewport();
   }
 
   async clickViewCartButton() {

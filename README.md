@@ -63,28 +63,52 @@ npm run report         # open the last HTML report
 Run a single test case:
 
 ```bash
-npx playwright test TC12
+npx playwright test --grep @TC12   # every test is tagged with its test case number
 ```
+
+### Tags
+
+Every test is tagged, so you can run a subset with `--grep`:
+
+| Tag | Meaning | Run |
+|-----|---------|-----|
+| `@smoke` | 6 critical flows (TC1, TC2, TC8, TC9, TC12, TC16): fast check that the main features work | `npm run test:smoke` |
+| `@regression` | the whole suite; smoke tests are part of it | `npm run test:regression` |
+| `@TCxx` | a single test case from the site's list | `npx playwright test --grep @TC12` |
+
+`@regression` is set once on each `test.describe`, and `@smoke` and `@TCxx` are set on the individual tests.
 
 ## Test coverage
 
-| # | Test case | Type |
-|---|-----------|------|
-| TC1 | Register user | UI |
-| TC2 | Login with correct email and password | UI + API setup |
-| TC3 | Login with incorrect email and password | UI |
-| TC4 | Logout user | UI + API setup |
-| TC5 | Register with an existing email | UI + API setup |
-| TC6 | Contact Us form (file upload, dialog) | UI |
-| TC7 | Test Cases page | UI |
-| TC8 | All products and product detail page | UI |
-| TC9 | Search product | UI |
-| TC10 | Subscription on home page | UI |
-| TC11 | Subscription on cart page | UI |
-| TC12 | Add products to cart (prices, quantity, totals) | UI |
-| TC13 | Product quantity in cart | UI |
-| TC14 | Place order: register while checkout | UI |
-| — | Create and delete user | API |
+| # | Test case | Type | Spec file | Tags |
+|---|-----------|------|-----------|------|
+| TC1 | Register user | UI | `Register/register.spec.ts` | `@smoke` `@regression` |
+| TC2 | Login with correct email and password | UI + API setup | `Login/login.spec.ts` | `@smoke` `@regression` |
+| TC3 | Login with incorrect email and password | UI | `Login/login.spec.ts` | `@regression` |
+| TC4 | Logout user | UI + API setup | `Login/login.spec.ts` | `@regression` |
+| TC5 | Register with an existing email | UI + API setup | `Register/register.spec.ts` | `@regression` |
+| TC6 | Contact Us form (file upload, dialog) | UI | `ContactUs/contact-us.spec.ts` | `@regression` |
+| TC7 | Test Cases page | UI | `Navigation/navigation.spec.ts` | `@regression` |
+| TC8 | All products and product detail page | UI | `Navigation/navigation.spec.ts` | `@smoke` `@regression` |
+| TC9 | Search product | UI | `Navigation/navigation.spec.ts` | `@smoke` `@regression` |
+| TC10 | Subscription on home page | UI | `Navigation/navigation.spec.ts` | `@regression` |
+| TC11 | Subscription on cart page | UI | `Cart/cart.spec.ts` | `@regression` |
+| TC12 | Add products to cart (prices, quantity, totals) | UI | `Cart/cart.spec.ts` | `@smoke` `@regression` |
+| TC13 | Product quantity in cart | UI | `Cart/cart.spec.ts` | `@regression` |
+| TC14 | Place order: register while checkout | UI | `Cart/cart.spec.ts` | `@regression` |
+| TC15 | Place order: register before checkout | UI | `Cart/cart.spec.ts` | `@regression` |
+| TC16 | Place order: login before checkout | UI + API setup | `Cart/cart.spec.ts` | `@smoke` `@regression` |
+| TC17 | Remove products from cart | UI | `Cart/cart.spec.ts` | `@regression` |
+| TC18 | View category products | UI | `Navigation/navigation.spec.ts` | `@regression` |
+| TC19 | View and cart brand products | UI | `Navigation/navigation.spec.ts` | `@regression` |
+| TC20 | Search products and verify cart after login | UI + API setup | `Cart/cart.spec.ts` | `@regression` |
+| TC21 | Add review on product | UI | `Navigation/navigation.spec.ts` | `@regression` |
+| TC22 | Add to cart from recommended items | UI | `Cart/cart.spec.ts` | `@regression` |
+| TC23 | Verify address details in checkout page | UI | `Navigation/navigation.spec.ts` | `@regression` |
+| TC24 | Download invoice after purchase order (file download) | UI | `Cart/cart.spec.ts` | `@regression` |
+| TC25 | Scroll up using the arrow button and scroll down | UI | `Navigation/navigation.spec.ts` | `@regression` |
+| TC26 | Scroll up without the arrow button and scroll down | UI | `Navigation/navigation.spec.ts` | `@regression` |
+| — | Create and delete user | API | `API/api.spec.ts` | `@regression` |
 
 ## Notes and known limitations
 
@@ -92,10 +116,10 @@ npx playwright test TC12
   - tests run with a single worker and an increased timeout;
   - CI runs **manually** (`Actions → Playwright Tests → Run workflow`) rather than on every push, to avoid failures caused by the site rather than the tests.
 - Ads are blocked at the network level by a fixture; they are third-party content and not part of the tested functionality.
+- Tests run with slowMo because the demo site attaches its JavaScript handlers late; this trades a few minutes of run time for stable results.
 
 ## Planned improvements
 
-- Remaining test cases from the site's list (TC15–TC26)
+- Shared helper for the repeated checkout flow (TC14, TC15, TC16, TC24)
 - Shared components for repeated page parts (header, footer, product cards)
 - Login via saved session state (`storageState`) for tests that don't verify login itself
-- Tags (`@smoke`, `@regression`) for selective runs

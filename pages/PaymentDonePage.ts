@@ -4,11 +4,13 @@ export class PaymentDonePage {
   readonly page: Page;
   readonly orderPlacedHeading: Locator;
   readonly continueButton: Locator;
+  readonly downloadInvoice: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.orderPlacedHeading = page.getByTestId('order-placed');
     this.continueButton = page.getByTestId('continue-button');
+    this.downloadInvoice = page.locator('.check_out');
   }
 
   async assertOrderPlaced() {

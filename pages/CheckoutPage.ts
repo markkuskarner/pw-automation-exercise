@@ -7,6 +7,8 @@ export class CheckoutPage {
   readonly billingAddress: Locator;
   readonly orderCommentTextArea: Locator;
   readonly placeOrderButton: Locator;
+  readonly deleteButton: Locator;
+  readonly totalOrderAmount: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -14,6 +16,8 @@ export class CheckoutPage {
     this.billingAddress = page.locator('#address_invoice');
     this.orderCommentTextArea = page.locator('textarea[name="message"]');
     this.placeOrderButton = page.getByRole('link', { name: 'Place Order' });
+    this.deleteButton = page.getByRole('link', { name: 'Delete Account' });
+    this.totalOrderAmount = page.locator('tr').filter({ hasText: 'Total Amount' }).locator('.cart_total_price');
   }
 
   async open() {

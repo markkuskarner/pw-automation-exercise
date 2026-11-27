@@ -15,6 +15,7 @@ export class ProductsPage {
   readonly searchButton: Locator;
   readonly contShoppingButton: Locator;
   readonly viewCartButton: Locator
+  readonly cartButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -31,6 +32,7 @@ export class ProductsPage {
     this.viewCartButton = page.getByRole('link', { name: 'View Cart' });
     this.firstProductPrice = this.firstProduct.locator('.productinfo h2');
     this.secondProductPrice = this.secondProduct.locator('.productinfo h2');
+    this.cartButton = page.locator('#header').getByRole('link', { name: 'Cart' });
   }
 
   async open() {
