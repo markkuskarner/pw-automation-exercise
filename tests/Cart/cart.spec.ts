@@ -135,8 +135,8 @@ test.describe('Cart', () => {
         await paymentDonePage.continueButton.click();
 
         await mainPage.deleteButton.click();
-        await expect(page.getByTestId('account-deleted')).toBeVisible();
-        await page.getByTestId('continue-button').click();
+        await accDeletedPage.assertAccDeletedPageIsVisible();
+        await accDeletedPage.contButton.click();
     });
 
     test('user can place order when registering before checkout', { tag: '@TC15' }, async () => {

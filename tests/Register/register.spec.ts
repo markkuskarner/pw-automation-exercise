@@ -4,18 +4,21 @@ import { AccCreatedPage } from '@pages/AccCreatedPage';
 import { LoginPage } from '@pages/LoginPage';
 import { MainPage } from '@pages/MainPage';
 import { SignUpPage } from '@pages/SignupPage';
+import { AccDeletedPage } from '@pages/AccDeletedPage';
 
 test.describe('Register', () => {
     let mainPage: MainPage;
     let loginPage: LoginPage;
     let signUpPage: SignUpPage;
     let accCreatedPage: AccCreatedPage;
+    let accDeletedPage: AccDeletedPage;
 
     test.beforeEach(async ({ page }) => {
         mainPage = new MainPage(page);
         loginPage = new LoginPage(page);
         signUpPage = new SignUpPage(page);
         accCreatedPage = new AccCreatedPage(page);
+        accDeletedPage = new AccDeletedPage(page);
 
         await mainPage.open();
         await mainPage.assertHomePageisVisible();
@@ -38,14 +41,12 @@ test.describe('Register', () => {
         await expect(mainPage.logginedUserText).toContainText(user.name);
 
         await mainPage.deleteButton.click();
-        await expect(page.getByTestId('account-deleted')).toBeVisible();
-        await page.getByTestId('continue-button').click();
+        await accDeletedPage.assertAccDeletedPageIsVisible();
+        await accDeletedPage.contButton.click();
     });
 
     test('user cannot register with an already registered email', { tag: '@TC5' }, async ({ page, createdUser }) => {
-        await loginPage.signUpEmailField.fill(createdUser.email);
-        await loginPage.signUpNameField.fill(createdUser.name);
-        await loginPage.signUpButton.click();
+        await loginPage.startSignUp(createdUser.name, createdUser.email);
 
         await expect(page.getByText('Email Address already exist!')).toBeVisible();
     });
