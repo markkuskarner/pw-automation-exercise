@@ -7,12 +7,3 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 .env
-
-# Playwright MCP agent logs
-/.playwright-mcp/
-
-# Claude Code / Playwright AI agents working files
-/.claude/
-/.mcp.json
-/specs/
-/tests/seed.spec.ts
